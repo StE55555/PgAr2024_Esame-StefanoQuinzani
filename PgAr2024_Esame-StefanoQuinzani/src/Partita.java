@@ -76,6 +76,8 @@ public void turno(Giocatore giocattuale){
 
       scartaCarte(giocattuale);
 
+
+
     }
 
 }
@@ -127,7 +129,19 @@ public void scegliAChiSparare(int[][]grigliaPosizioni, ArrayList<Giocatore> gioc
 
     if(distanzaFuoco <= distanzaDaGiocatore){
 
-        giocatori.get(scelto).setPF(giocatori.get(scelto).getPF()-1);
+       for(int z = 0 ; z < giocatori.get(scelto).getMazzoGiocatore().size(); z++){
+
+        if(giocatori.get(scelto).getMazzoGiocatore().get(z).getNome().equals("Mancante")){ // se il giocatore a cui spari ha la carte mancante ti para il colpo
+
+            System.out.println("utilizza la carta mancante e ti para l'attacco");
+
+        }else {
+            giocatori.get(scelto).setPF(giocatori.get(scelto).getPF()-1);
+        }
+        
+        
+
+       }
 
         if(giocatori.get(scelto).getPF() == 0){
 
