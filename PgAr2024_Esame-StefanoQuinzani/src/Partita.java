@@ -74,11 +74,40 @@ public void turno(Giocatore giocattuale){
 
       scegliAChiSparare( grigliaPosizioni, giocatori,giocattuale, armaScelta);
 
-
+      scartaCarte(giocattuale);
 
     }
 
 }
+
+ public void scartaCarte(Giocatore giocatoreattuale){
+
+    int count = 0;
+
+    for(int i = 0; i < giocatoreattuale.getMazzoGiocatore().size(); i ++){
+    
+    if(giocatoreattuale.getMazzoGiocatore().get(i).getTipo() == 1 ){
+
+        count++;
+    }
+
+    }if(count > 1){//se c'è più di un arma scarto le altre
+
+    ArrayList<Carta> mazzoAggiornato = new ArrayList<>();
+
+      for(int j = 0 ; j< count ; j++){
+
+        if(giocatoreattuale.getMazzoGiocatore().get(j).getTipo() == 1 ){
+
+           mazzoAggiornato.remove(j);
+        }
+        j++;
+      } giocatoreattuale.setMazzoGiocatore(mazzoAggiornato);//passo al giocatore il nuovo mazzo con le carte scartate
+
+    }
+
+ }
+
 
 //per scegliere a chi sparare
 public void scegliAChiSparare(int[][]grigliaPosizioni, ArrayList<Giocatore> giocatori , Giocatore giocatoreattuale, Carta aramascelta ) {
