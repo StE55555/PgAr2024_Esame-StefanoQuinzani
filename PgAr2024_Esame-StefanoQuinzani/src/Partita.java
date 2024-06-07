@@ -47,10 +47,10 @@ public void avviaPartita(){
 
     i++;
 
-    if(i > giocatori.size()){ //se tutti giocano si ricomincia
+     if(i >= giocatori.size()){ //se tutti giocano si ricomincia
 
         i = 0;
-    }
+     }
     
     }
 
@@ -64,6 +64,12 @@ public void turno(Giocatore giocattuale){
    pescaDueCarte(giocattuale);
 
     int cartaScelta = interazione.scegliCarta();
+
+    if(cartaScelta == 100){
+
+        System.out.println("salti il turno");
+        return;
+    }
 
     if(giocattuale.getMazzoGiocatore().get(cartaScelta).getNome().equals("Bang")){ //la carta scelta é  una carta bang 
        
@@ -137,6 +143,12 @@ public void scegliAChiSparare(int[][]grigliaPosizioni, ArrayList<Giocatore> gioc
 
         }else {
             giocatori.get(scelto).setPF(giocatori.get(scelto).getPF()-1);
+
+            if(giocatori.get(scelto).getNome().equals("Bart Cassidy")){// sarebbe da implementare anche per tutti gli altri personaggi
+
+                pescaDueCarte(giocatori.get(scelto));
+
+
         }
         
         
@@ -148,7 +160,7 @@ public void scegliAChiSparare(int[][]grigliaPosizioni, ArrayList<Giocatore> gioc
              giocatori.get(scelto).setVivo(false);
 
         }
-    }}
+    }}}
 
     //calcoladistanza
     public int calcolaDistanza(int x1, int y1, int x2, int y2) {

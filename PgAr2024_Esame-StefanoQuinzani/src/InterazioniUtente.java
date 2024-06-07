@@ -26,7 +26,7 @@ public class InterazioniUtente {
 
     public int scegliCarta(){
 
-        System.out.println("Scegli che carta usare (indice la prima che leggi é la zero):");
+        System.out.println("Scegli che carta usare (indice la prima che leggi é la zero) 100 PER SALTARE IL TURNO:");
 
         int cartascelta = scanner.nextInt();
         scanner.nextLine();
