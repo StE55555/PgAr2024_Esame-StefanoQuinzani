@@ -19,17 +19,28 @@ InterazioniUtente interazione = new InterazioniUtente();
 
 
 
-
+//metodo della partita vera e propria
 public void avviaPartita(){
     
     setNumeroGiocatori(interazione.scegliNumGiocatori());
     inizializzaGriglia();
-    assegnamenti.assegnaTuttiRuoli(giocatori);
-    creaMazzo();
+    rimepiArrayListGiocatori(numeroGiocatori);
+    assegnamenti.setRuoloDisponibili(numeroGiocatori);
+    assegnamenti.assegnaTuttiRuoli(giocatori,numeroGiocatori);
+    Xml.setNomiePF(giocatori);
+   // creaMazzo();
 
 
 }
 
+
+ // Aggiungi n giocatori all'ArrayList
+ public void rimepiArrayListGiocatori(int numeroGiocatori){
+
+        for (int i = 0; i < numeroGiocatori; i++) {
+            giocatori.add(new Giocatore());
+        }
+    }
 
 
 //metodo che setta il numero dei giocatori 
@@ -39,7 +50,7 @@ this.numeroGiocatori = numero;
 
 }
 
-
+//inizializzare la griglia mettere ostacoli personaggi ecc..-
 public void inizializzaGriglia(){
 
     for (int i = 0; i < grigliaPosizioni.length; i++) {
@@ -123,5 +134,13 @@ public void eliminaGiocatore(){
 public void controllaGiocatoreEliminato(Giocatore giocatoreeliminato){
 
 
+}
+
+public Assegnamenti getAssegnamenti() {
+    return assegnamenti;
+}
+
+public int getNumeroGiocatori() {
+    return numeroGiocatori;
 }
 }
