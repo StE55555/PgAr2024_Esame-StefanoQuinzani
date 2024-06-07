@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import javax.xml.stream.XMLInputFactory;
@@ -8,7 +9,6 @@ import javax.xml.stream.XMLStreamReader;
 
 public class Xml {
 
-    private ArrayList<Ruolo> ruoliTotaliDisponibili = new ArrayList<>();
 
     public static void setNomiePF(ArrayList<Giocatore> giocatori) {
         try {
@@ -50,7 +50,6 @@ public class Xml {
             for(Giocatore giocatore : giocatori) {
                 System.out.println("Nome del giocatore: " + giocatore.getNome());
                 System.out.println("PF del giocatore: " + giocatore.getPF());
-                System.out.println("ruolo:" + giocatore.getRuolo());
             }
         } catch (FileNotFoundException e) {
             System.out.println("Il file non è stato trovato: " + e.getMessage());
@@ -61,6 +60,50 @@ public class Xml {
         }
     }
    
+//restituisce un arrayList con i primi 6 posti dedicati alle armi
+ public static ArrayList<Carta> restituisciArmi(){
+
+        ArrayList<Carta> carte = new ArrayList<>();
+
+        try {
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            FileInputStream file = new FileInputStream("src\\listaCarte.xml");
+            XMLStreamReader reader = factory.createXMLStreamReader(file);
+
+            while(reader.hasNext()){
+                int eventType = reader.next();
+
+                switch(eventType){
+                    case XMLStreamReader.START_ELEMENT:
+                        String elementName = reader.getLocalName();
+                        if(elementName.equals("arma")){
+                            Carta carta = new Carta();
+                            while(reader.hasNext() && !(reader.isEndElement() && reader.getLocalName().equals("arma"))){
+                                eventType = reader.next();
+                                if(eventType == XMLStreamReader.START_ELEMENT){
+                                    if(reader.getLocalName().equals("nome")){
+                                        carta.setNome(reader.getElementText());
+                                    } else if(reader.getLocalName().equals("distanza")){
+                                        carta.setDistanzaDiFuoco(Integer.parseInt(reader.getElementText()));
+                                        carta.setTipo(1);
+                                    }
+                                }
+                            }
+                            carte.add(carta);
+                        }
+                        break;
+                }
+            }
+
+            reader.close();
+            file.close();
+        } catch (Exception e) {
+            System.out.println("Si è verificato un errore durante la lettura dell'XML: " + e.getMessage());
+        }
+
+        return carte;
+ }
+
     }
 
 

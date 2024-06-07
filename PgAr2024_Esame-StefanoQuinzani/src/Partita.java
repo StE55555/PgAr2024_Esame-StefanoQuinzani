@@ -1,5 +1,9 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Partita {
 
@@ -9,38 +13,168 @@ public class Partita {
 
    private ArrayList<Carta> mazzoPartita = new ArrayList<>();
 
+   private int numCarteScartate = 0;
+
    private  int[][] grigliaPosizioni = new int[6][6];
 
    private Random rand = new Random();
 
    private Assegnamenti assegnamenti = new Assegnamenti();
 
-InterazioniUtente interazione = new InterazioniUtente();
+  private InterazioniUtente interazione = new InterazioniUtente();
 
+  private Scanner scanner = new Scanner(System.in);
 
 
 //metodo della partita vera e propria
 public void avviaPartita(){
     
+    System.out.println("IL PRIMO GIOCATORE é LO SCERIFFO ");
     setNumeroGiocatori(interazione.scegliNumGiocatori());
     inizializzaGriglia();
     rimepiArrayListGiocatori(numeroGiocatori);
+    inizializzaPosizioni();
     assegnamenti.setRuoloDisponibili(numeroGiocatori);
     assegnamenti.assegnaTuttiRuoli(giocatori,numeroGiocatori);
     Xml.setNomiePF(giocatori);
-   // creaMazzo();
+    creaMazzo();
+    mescolaMazzo();
 
+    int i = 0;
+    while(controllafinepartita() != -1){
+
+    turno(giocatori.get(i));
+
+    i++;
+
+    if(i > giocatori.size()){ //se tutti giocano si ricomincia
+
+        i = 0;
+    }
+    
+    }
 
 }
+
+
+public void turno(Giocatore giocattuale){
+
+  System.out.println("\n\nTurno del giocatore:  " + giocattuale.getNome());
+
+   pescaDueCarte(giocattuale);
+
+    int cartaScelta = interazione.scegliCarta();
+
+    if(giocattuale.getMazzoGiocatore().get(cartaScelta).getNome().equals("Bang")){ //la carta scelta é  una carta bang 
+       
+
+       int IDarmascelta = interazione.scegliArma();
+       
+        Carta armaScelta = mazzoPartita.get(IDarmascelta);
+
+      scegliAChiSparare( grigliaPosizioni, giocatori,giocattuale, armaScelta);
+
+
+
+    }
+
+}
+
+//per scegliere a chi sparare
+public void scegliAChiSparare(int[][]grigliaPosizioni, ArrayList<Giocatore> giocatori , Giocatore giocatoreattuale, Carta aramascelta ) {
+       
+    System.out.println("A chi vuoi sparare?");
+    int scelto = scanner.nextInt();
+    scanner.nextLine();
+
+    int distanzaFuoco  = aramascelta.getDistanzaDiFuoco(); //prendo quanta spara lontano l'arma scelta
+
+    if(aramascelta.getTipo()== 2){
+
+        distanzaFuoco = 1; //se l'arma è ancora bang viene considerata distanzadifuoco =1 come di default
+    }
+    
+     int distanzaDaGiocatore = calcolaDistanza(giocatoreattuale.getX(),giocatoreattuale.getY(), giocatori.get(scelto).getX(),  giocatori.get(scelto).getY());
+
+    if(distanzaFuoco <= distanzaDaGiocatore){
+
+        giocatori.get(scelto).setPF(giocatori.get(scelto).getPF()-1);
+
+        if(giocatori.get(scelto).getPF() == 0){
+
+             giocatori.get(scelto).setVivo(false);
+
+        }
+    }}
+
+    //calcoladistanza
+    public int calcolaDistanza(int x1, int y1, int x2, int y2) {
+        int distanza = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+        return distanza / 2; // dividi per due e arrotonda per difetto
+}
+
+
+public void inizializzaPosizioni(){
+
+    for(int k = 0; k< numeroGiocatori ; k++){
+
+        Giocatore giocatore = new Giocatore(k);
+        int x = 0, y = 0;
+        for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+        if (grigliaPosizioni[i][j] == giocatore.getIdGiocatore()) {
+            giocatore.setX(i) ;
+            giocatore.setY(j) ;
+            break;
+
+    }
+    }
+    }}
+
+}
+
+
+
+
+
+
+ public void pescaDueCarte(Giocatore giocatoreattuale ){
+    
+    ArrayList<Carta> mazzoaggiornato = giocatoreattuale.getMazzoGiocatore();
+     
+    mazzoaggiornato.add(mazzoPartita.getFirst());
+    mazzoPartita.removeFirst();
+    if(mazzoPartita.size()== 0){
+
+        mazzoPartita = new ArrayList<>();
+        mescolaMazzo();
+
+    }
+    mazzoaggiornato.add(mazzoPartita.getFirst());
+    mazzoPartita.removeFirst();
+
+    giocatoreattuale.setMazzoGiocatore(mazzoaggiornato);
+    System.out.println(mazzoaggiornato);
+
+
+ }
+
+
+
+
 
 
  // Aggiungi n giocatori all'ArrayList
  public void rimepiArrayListGiocatori(int numeroGiocatori){
 
-        for (int i = 0; i < numeroGiocatori; i++) {
-            giocatori.add(new Giocatore());
+        for (int k = 0; k < numeroGiocatori; k++) {
+            
+          
+
+                giocatori.add(new Giocatore(k));
+
+            }
         }
-    }
 
 
 //metodo che setta il numero dei giocatori 
@@ -117,24 +251,66 @@ public void inserisciOstacolo(int riga, int colonna ){
 
 
 
-public void creaMazzo(){
+public void creaMazzo (){
 
+  this.mazzoPartita = Xml.restituisciArmi();
+ Carta armaaggiuntiva = this.mazzoPartita.get(0);
+  this.mazzoPartita.add(armaaggiuntiva);// aggiungo due volte lo Schofield così ne ho tre
+  this.mazzoPartita.add(armaaggiuntiva);
+
+ for(int i = 0 ; i < 51 ; i++){
+
+    Carta cartaBang = new Carta("Bang", 2);
+    mazzoPartita.add(cartaBang);
+
+ }
+
+ for(int i = 0 ; i < 25 ; i++){
+
+    Carta cartaMancato = new Carta("Mancato", 2);
+    mazzoPartita.add(cartaMancato);
+
+ }
 
 }
 
+public void mescolaMazzo(){
 
-public void eliminaGiocatore(){
-
-
-
-
+    Collections.shuffle(this.mazzoPartita);
 }
+
 
 //controlla chi é il giocatore eliminato e agisce di conseguenza
-public void controllaGiocatoreEliminato(Giocatore giocatoreeliminato){
+public int controllafinepartita(){
 
+    int fine = -1;
+    int count = 0;
 
+ if(giocatori.get(0).getVivo() == false){
+
+    System.out.println("Ha Vinto il Rinnegato");
+
+  return fine;
+
+ }else if(giocatori.get(0).getVivo() == true){
+
+    for (Giocatore elemento : giocatori) {
+        
+        if(elemento.getRuolo().equals("Fuorilegge") || elemento.getRuolo().equals("Rinnegato") ){
+
+           if ( elemento.getVivo()== true ){
+
+            fine = 2;
+
+           return fine;
+
+           }
+
+        } 
+    } 
+}return fine;
 }
+
 
 public Assegnamenti getAssegnamenti() {
     return assegnamenti;
@@ -142,5 +318,8 @@ public Assegnamenti getAssegnamenti() {
 
 public int getNumeroGiocatori() {
     return numeroGiocatori;
+
 }
+
+
 }

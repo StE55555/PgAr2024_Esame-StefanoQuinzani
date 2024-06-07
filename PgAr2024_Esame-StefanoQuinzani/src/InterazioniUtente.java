@@ -23,4 +23,28 @@ public class InterazioniUtente {
 
     }
 
+
+    public int scegliCarta(){
+
+        System.out.println("Scegli che carta usare (indice la prima che leggi é la zero):");
+
+        int cartascelta = scanner.nextInt();
+        scanner.nextLine();
+        return cartascelta;
+        
+    }
+
+    public int scegliArma(){
+
+       
+        System.out.println("Scegli che ARMA usare (indice la prima che leggi é la zero):");
+
+        int cartascelta = scanner.nextInt();
+        scanner.nextLine();
+
+        return cartascelta;
+        
+    }
+    
+
 }

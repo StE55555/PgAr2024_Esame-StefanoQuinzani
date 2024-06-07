@@ -12,10 +12,49 @@ public class Giocatore {
 
   private int posizioneGiocatore;
 
+  private int X;
+
+  private int Y;
+
+  private boolean vivo = true;
+
   private ArrayList<Carta> mazzoGiocatore = new ArrayList<>();
 
+public Giocatore(int ID){
+
+    this.idGiocatore = ID;
+
+}
+
+public void setVivo(boolean vivo) {
+    this.vivo = vivo;
+}
+
+public boolean getVivo(){
+
+    return vivo;
+}
+
+public int getIdGiocatore() {
+    return idGiocatore;
+}
 
 
+ public int getX() {
+     return X;
+ }
+
+ public int getY() {
+     return Y;
+ }
+
+ public void setX(int x) {
+     X = x;
+ }
+
+ public void setY(int y) {
+     Y = y;
+ }
   public String getRuolo() {
       return ruolo;
   }
@@ -44,4 +83,14 @@ public class Giocatore {
     public String toString() {
         return "Giocatore { nome: " + nome + ", pf: " + PF + " }";
     }
+
+    public ArrayList<Carta> getMazzoGiocatore() {
+        return mazzoGiocatore;
+    }
+
+    public void setMazzoGiocatore(ArrayList<Carta> mazzoGiocatore) {
+        this.mazzoGiocatore = mazzoGiocatore;
+    }
+
+
 }
